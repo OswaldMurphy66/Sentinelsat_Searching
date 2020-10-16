@@ -5,7 +5,7 @@ Created on Mon Sep 21 19:46:23 2020
 
 @author: oswald
 """
-
+## Remaning to do : Add orbit number
 
 # connect to the API
 from sentinelsat import SentinelAPI
