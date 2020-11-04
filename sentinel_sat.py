@@ -19,31 +19,38 @@ from shapely import wkt
 api = SentinelAPI('oswald', 'Hjs19970709', 'https://scihub.copernicus.eu/dhus')
 
 # search by polygon, time, and SciHub query keywords
-date=('NOW-20DAYS', 'NOW')
+date=('NOW-365DAYS', 'NOW')
 area='POINT (19 49)' #lon lat https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry
 result=api.query(date=date, area=area,producttype='SLC')
 
 
 dates=[]
 orbits=[]
+slicenumber=[]
 for key in result:
     print('relativeorbitnumber',result[key]['relativeorbitnumber'])
     orbits.append(result[key]['relativeorbitnumber'])
     dates.append(result[key]['beginposition'])
+    slicenumber.append(result[key]['slicenumber'])
 
 orbits_unique=list(set(orbits))    # get unique orbits in list 
-
+slicenumber_unique=list(set(slicenumber))    # get unique orbits in list 
 
 
 colors=['r','g','b','k','c','y','m']            
 
 fig, (ax1, ax2) = plt.subplots(2,1)
+
+#ax1.plot(dates,orbits,'o')
+#plt.show()
+
+
 # plot timeline
-for n in range(0,len(orbits_unique)-1):
+for n in range(0,len(orbits_unique)):
     for i in range(0,len(orbits)):
         if orbits_unique[n]==orbits[i]:
             # plot
-            ax1.plot(dates[i],n,'o'+colors[n])
+            ax1.plot(dates[i],orbits_unique[n],'o'+colors[n])
             # beautify the x-labels
             # fig.autofmt_xdate()
             
