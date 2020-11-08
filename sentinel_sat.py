@@ -19,7 +19,7 @@ from shapely import wkt
 api = SentinelAPI('oswald', 'Hjs19970709', 'https://scihub.copernicus.eu/dhus')
 
 # search by polygon, time, and SciHub query keywords
-date=('NOW-365DAYS', 'NOW')
+date=('NOW-500DAYS', 'NOW')
 area='POINT (19 49)' #lon lat https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry
 result=api.query(date=date, area=area,producttype='SLC')
 
@@ -40,12 +40,15 @@ slicenumber_unique=list(set(slicenumber))    # get unique orbits in list
 colors=['r','g','b','k','c','y','m']            
 
 fig, (ax1, ax2) = plt.subplots(2,1)
+plt.subplots_adjust(hspace=0.6)
 
 #ax1.plot(dates,orbits,'o')
 #plt.show()
 
 
 # plot timeline
+
+
 for n in range(0,len(orbits_unique)):
     for i in range(0,len(orbits)):
         if orbits_unique[n]==orbits[i]:
@@ -53,10 +56,11 @@ for n in range(0,len(orbits_unique)):
             ax1.plot(dates[i],orbits_unique[n],'o'+colors[n])
             # beautify the x-labels
             # fig.autofmt_xdate()
-            
+ax1.set_title('Images Found Along Time',fontsize=16)
+ax1.set(xlabel='Date', ylabel='Relative Orbit Number')
             
 #plot footprint
-
+   
 
 for key in result:
     print(i)
@@ -75,11 +79,21 @@ for key in result:
         index=orbits_unique.index(result[key]['relativeorbitnumber'])
         
         xs, ys = geom.exterior.xy
-        ax2.fill(xs, ys, alpha=0.5, fc='none', ec=colors[index])               
+        ax2.fill(xs, ys, alpha=0.5, fc='none', ec=colors[index])   
+        
+   # for n in range(0,len(slicenumber)):
+   #  ax2.annotate(slicenumber[n], xy=(18, 48),  xycoords='data',
+   #  xytext=(0.8, 0.95), textcoords='axes fraction',
+   # arrowprops=dict(facecolor='black', shrink=0.05),
+   # horizontalalignment='right', verticalalignment='top',
+   # )
+        
+        
                  # # # plot
      # plt.plot(dates[i],n,'*')
      # # beautify the x-labels
 # plt.gcf().autofmt_xdate()
 ax2.plot(wkt.loads(area).x,wkt.loads(area).y,'+k')
-            
+ax2.set_title('Slice Number & Area',fontsize=16)
+ax2.set(xlabel='Y', ylabel='X')
             # plt.show()            
