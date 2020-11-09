@@ -15,11 +15,12 @@ from sentinelsat import SentinelAPI
 from datetime import date
 import matplotlib.pyplot as plt
 from shapely import wkt
+import math
 
 api = SentinelAPI('oswald', 'Hjs19970709', 'https://scihub.copernicus.eu/dhus')
 
 # search by polygon, time, and SciHub query keywords
-date=('NOW-500DAYS', 'NOW')
+date=('NOW-50DAYS', 'NOW')
 area='POINT (19 49)' #lon lat https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry
 result=api.query(date=date, area=area,producttype='SLC')
 
@@ -54,6 +55,9 @@ for n in range(0,len(orbits_unique)):
         if orbits_unique[n]==orbits[i]:
             # plot
             ax1.plot(dates[i],orbits_unique[n],'o'+colors[n])
+ax1.set_yticks(orbits_unique)
+ax1.set_yticklabels(orbits_unique)
+#ax1.set_yticklabels(['Orbit Nr. %d'%orbits_unique[1],'Orbit Nr. %d'%orbits_unique[2],'Orbit Nr. %d'%orbits_unique[3]])
             # beautify the x-labels
             # fig.autofmt_xdate()
 ax1.set_title('Images Found Along Time',fontsize=16)
