@@ -54,8 +54,8 @@ for n in range(0,len(orbits_unique)):
     for i in range(0,len(orbits)):
         if orbits_unique[n]==orbits[i]:
             # plot
-            ax1.plot(dates[i],orbits_unique[n],'o'+colors[n])
-ax1.set_yticks(orbits_unique)
+            ax1.plot(dates[i],n,'o'+colors[n])
+ax1.set_yticks(range(0,len(orbits_unique)))
 ax1.set_yticklabels(orbits_unique)
 #ax1.set_yticklabels(['Orbit Nr. %d'%orbits_unique[1],'Orbit Nr. %d'%orbits_unique[2],'Orbit Nr. %d'%orbits_unique[3]])
             # beautify the x-labels
