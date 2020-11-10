@@ -16,11 +16,12 @@ from datetime import date
 import matplotlib.pyplot as plt
 from shapely import wkt
 import math
+import numpy as np
 
 api = SentinelAPI('oswald', 'Hjs19970709', 'https://scihub.copernicus.eu/dhus')
 
 # search by polygon, time, and SciHub query keywords
-date=('NOW-50DAYS', 'NOW')
+date=('NOW-100DAYS', 'NOW')
 area='POINT (19 49)' #lon lat https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry
 result=api.query(date=date, area=area,producttype='SLC')
 
@@ -54,8 +55,8 @@ for n in range(0,len(orbits_unique)):
     for i in range(0,len(orbits)):
         if orbits_unique[n]==orbits[i]:
             # plot
-            ax1.plot(dates[i],n,'o'+colors[n])
-ax1.set_yticks(range(0,len(orbits_unique)))
+            ax1.plot(dates[i],orbits_unique[n],'o'+colors[n])
+ax1.set_yticks(orbits_unique)
 ax1.set_yticklabels(orbits_unique)
 #ax1.set_yticklabels(['Orbit Nr. %d'%orbits_unique[1],'Orbit Nr. %d'%orbits_unique[2],'Orbit Nr. %d'%orbits_unique[3]])
             # beautify the x-labels
@@ -84,7 +85,7 @@ for key in result:
         
         xs, ys = geom.exterior.xy
         ax2.fill(xs, ys, alpha=0.5, fc='none', ec=colors[index])   
-        
+        ax2.text(xs[2],np.max(ys),result[key]['slicenumber'],fontsize=13, color = "r", style = "italic")        
    # for n in range(0,len(slicenumber)):
    #  ax2.annotate(slicenumber[n], xy=(18, 48),  xycoords='data',
    #  xytext=(0.8, 0.95), textcoords='axes fraction',
