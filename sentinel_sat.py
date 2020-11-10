@@ -5,7 +5,7 @@ Created on Mon Sep 21 19:46:23 2020
 
 @author: oswald
 """
-## Remaning to do : 
+## Remaning to do :
 
 #Add orbit number
 #Sort by spots
@@ -35,11 +35,11 @@ for key in result:
     dates.append(result[key]['beginposition'])
     slicenumber.append(result[key]['slicenumber'])
 
-orbits_unique=list(set(orbits))    # get unique orbits in list 
-slicenumber_unique=list(set(slicenumber))    # get unique orbits in list 
+orbits_unique=list(set(orbits))    # get unique orbits in list
+slicenumber_unique=list(set(slicenumber))    # get unique orbits in list
 
 
-colors=['r','g','b','k','c','y','m']            
+colors=['r','g','b','k','c','y','m']
 
 fig, (ax1, ax2) = plt.subplots(2,1)
 plt.subplots_adjust(hspace=0.6)
@@ -54,8 +54,9 @@ plt.subplots_adjust(hspace=0.6)
 for n in range(0,len(orbits_unique)):
     for i in range(0,len(orbits)):
         if orbits_unique[n]==orbits[i]:
-            # plot
+            # plot            
             ax1.plot(dates[i],orbits_unique[n],'o'+colors[n])
+
 ax1.set_yticks(orbits_unique)
 ax1.set_yticklabels(orbits_unique)
 #ax1.set_yticklabels(['Orbit Nr. %d'%orbits_unique[1],'Orbit Nr. %d'%orbits_unique[2],'Orbit Nr. %d'%orbits_unique[3]])
@@ -63,42 +64,43 @@ ax1.set_yticklabels(orbits_unique)
             # fig.autofmt_xdate()
 ax1.set_title('Images Found Along Time',fontsize=16)
 ax1.set(xlabel='Date', ylabel='Relative Orbit Number')
-            
+
 #plot footprint
-   
+
 
 for key in result:
     print(i)
-    i=+1            
+    i=+1
     #print( result[key]['footprint'])
-    
+
     #print(wkt.loads(result[key]['footprint']))
-    
-    for fp in wkt.loads(result[key]['footprint']):   
-        
+
+    for fp in wkt.loads(result[key]['footprint']):
+
         if  hasattr(fp, 'geoms'):
             geom=fp.geoms
         else:
             geom=fp
-            
+
         index=orbits_unique.index(result[key]['relativeorbitnumber'])
-        
+
         xs, ys = geom.exterior.xy
         ax2.fill(xs, ys, alpha=0.5, fc='none', ec=colors[index])   
         ax2.text(xs[2],np.max(ys),result[key]['slicenumber'],fontsize=13, color = "r", style = "italic")        
+
    # for n in range(0,len(slicenumber)):
    #  ax2.annotate(slicenumber[n], xy=(18, 48),  xycoords='data',
    #  xytext=(0.8, 0.95), textcoords='axes fraction',
    # arrowprops=dict(facecolor='black', shrink=0.05),
    # horizontalalignment='right', verticalalignment='top',
    # )
-        
-        
+
+
                  # # # plot
      # plt.plot(dates[i],n,'*')
      # # beautify the x-labels
 # plt.gcf().autofmt_xdate()
 ax2.plot(wkt.loads(area).x,wkt.loads(area).y,'+k')
 ax2.set_title('Slice Number & Area',fontsize=16)
-ax2.set(xlabel='Y', ylabel='X')
-            # plt.show()            
+ax2.set(xlabel='Lat', ylabel='Lon')
+            # plt.show()
