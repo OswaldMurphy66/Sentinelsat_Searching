@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 from shapely import wkt
 import math
 import numpy as np
+from collections.abc import Iterable 
 
 api = SentinelAPI('oswald', 'Hjs19970709', 'https://scihub.copernicus.eu/dhus')
 
@@ -36,7 +37,7 @@ for key in result:
     slicenumber.append(result[key]['slicenumber'])
 
 orbits_unique=list(set(orbits))    # get unique orbits in list
-slicenumber_unique=list(set(slicenumber))    # get unique orbits in list
+slicenumber_unique=list(set(slicenumber))    # get unique slicenumbers in list
 
 
 colors=['r','g','b','k','c','y','m']
@@ -55,9 +56,9 @@ for n in range(0,len(orbits_unique)):
     for i in range(0,len(orbits)):
         if orbits_unique[n]==orbits[i]:
             # plot            
-            ax1.plot(dates[i],orbits_unique[n],'o'+colors[n])
+            ax1.plot(dates[i],n,'o'+colors[n])
 
-ax1.set_yticks(orbits_unique)
+ax1.set_yticks(range(0,n+1))
 ax1.set_yticklabels(orbits_unique)
 #ax1.set_yticklabels(['Orbit Nr. %d'%orbits_unique[1],'Orbit Nr. %d'%orbits_unique[2],'Orbit Nr. %d'%orbits_unique[3]])
             # beautify the x-labels
@@ -74,20 +75,24 @@ for key in result:
     #print( result[key]['footprint'])
 
     #print(wkt.loads(result[key]['footprint']))
-
-    for fp in wkt.loads(result[key]['footprint']):
-
-        if  hasattr(fp, 'geoms'):
-            geom=fp.geoms
-        else:
-            geom=fp
-
-        index=orbits_unique.index(result[key]['relativeorbitnumber'])
-
-        xs, ys = geom.exterior.xy
-        ax2.fill(xs, ys, alpha=0.5, fc='none', ec=colors[index])   
-        ax2.text(xs[2],np.max(ys),result[key]['slicenumber'],fontsize=13, color = "r", style = "italic")        
-
+    if  isinstance(wkt.loads(result[key]['footprint']), Iterable): # check if is itterabel
+        for fp in wkt.loads(result[key]['footprint']):
+            fp=fp
+   
+    else:
+        fp= wkt.loads(result[key]['footprint'])
+       
+    if  hasattr(fp, 'geoms'): # check if fp hast the attributre geoms
+        geom=fp.geoms
+    else:
+        geom=fp
+        
+    index=orbits_unique.index(result[key]['relativeorbitnumber'])
+    
+    xs, ys = geom.exterior.xy
+    ax2.fill(xs, ys, alpha=0.5, fc='none', ec=colors[index])
+    imax=np.argmax(xs)
+    ax2.text(xs[imax],ys[imax],result[key]['slicenumber'],fontsize=13, color = colors[index], style = "italic")     
    # for n in range(0,len(slicenumber)):
    #  ax2.annotate(slicenumber[n], xy=(18, 48),  xycoords='data',
    #  xytext=(0.8, 0.95), textcoords='axes fraction',
