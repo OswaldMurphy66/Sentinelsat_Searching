@@ -7,10 +7,8 @@ Created on Mon Sep 21 19:46:23 2020
 """
 ## Remaning to do :
 
-#Add orbit number
-#Sort by spots
 
-# connect to the API
+                                                                               # connect to the API
 from sentinelsat import SentinelAPI
 from datetime import date
 import matplotlib.pyplot as plt
@@ -21,10 +19,10 @@ from collections.abc import Iterable
 
 api = SentinelAPI('oswald', 'Hjs19970709', 'https://scihub.copernicus.eu/dhus')
 
-# search by polygon, time, and SciHub query keywords
+                                                                               # search by polygon, time, and SciHub query keywords
 date=('NOW-300DAYS', 'NOW')
-area='POINT (19 49)' #lon lat https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry
-result=api.query(date=date, area=area,producttype='SLC')
+area='POINT (19 49)'                                                           #lon lat https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry
+result=api.query(date=date, area=area,producttype='SLC')                       # form 'result' as a dictionary containing meta data of the images found in that certain place
 
 
 dates=[]
@@ -32,18 +30,18 @@ orbits=[]
 slicenumber=[]
 for key in result:
     print('relativeorbitnumber',result[key]['relativeorbitnumber'])
-    orbits.append(result[key]['relativeorbitnumber'])
-    dates.append(result[key]['beginposition'])
+    orbits.append(result[key]['relativeorbitnumber'])                          # recording relative orbit number in an array
+    dates.append(result[key]['beginposition'])                                 # recording beginposition orbit number in an array
     slicenumber.append(result[key]['slicenumber'])
 
-orbits_unique=list(set(orbits))    # get unique orbits in list
-slicenumber_unique=list(set(slicenumber))    # get unique slicenumbers in list
+orbits_unique=list(set(orbits))                                                # get unique orbits in list
+slicenumber_unique=list(set(slicenumber))                                      # get unique slicenumbers in list
 
 
-colors=['r','g','b','k','c','y','m']
+colors=['r','g','b','k','c','y','m']                                           # creating an array for applying different colors
 
-fig, (ax1, ax2) = plt.subplots(2,1)
-plt.subplots_adjust(hspace=0.6)
+fig, (ax1, ax2) = plt.subplots(2,1)                                            # form 2 separate plots 
+plt.subplots_adjust(hspace=0.6)                                                # adjusting space between subplots
 
 
 
@@ -54,26 +52,25 @@ for i in range(0,len(orbits)):
            id_spot=slicenumber_unique.index(slicenumber[i])
            ax1.plot(dates[i],n-(id_spot+1)/(len(slicenumber_unique)+1),'o'+colors[n])
            ax1.plot(dates[i],n,'o'+colors[n])
-        #   ax1.plot(dates[i],n-(id_spot/len(slicenumber_unique)),'o'+colors[n])
-
+ 
 ax1.set_yticks(range(0,n+1))
 ax1.set_yticklabels(orbits_unique)
 
 
 
-#plot footprint
+                                                                               #plot footprint
 for key in result:
     print(i)
     i=+1
   
-    if  isinstance(wkt.loads(result[key]['footprint']), Iterable): # check if is itterabel
+    if  isinstance(wkt.loads(result[key]['footprint']), Iterable):             # check if is itterabel
         for fp in wkt.loads(result[key]['footprint']):
             fp=fp
    
     else:
         fp= wkt.loads(result[key]['footprint'])
        
-    if  hasattr(fp, 'geoms'): # check if fp hast the attributre geoms
+    if  hasattr(fp, 'geoms'):                                                  # check if fp hast the attributre geoms
         geom=fp.geoms
     else:
         geom=fp
@@ -89,4 +86,4 @@ for key in result:
 ax2.plot(wkt.loads(area).x,wkt.loads(area).y,'+k')
 ax2.set_title('Slice Number & Area',fontsize=16)
 ax2.set(xlabel='Lat', ylabel='Lon')
-            # plt.show()
+                                                                               # plt.show()
