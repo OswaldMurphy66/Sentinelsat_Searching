@@ -19,11 +19,18 @@ from collections.abc import Iterable
 
 def sentinelsearch(username,key,date,area) :
     
+    ## Inputs:
+     #   username: string, username to sentinel hub api
+     #   key: string, password to sentinel hub api
+     #   date: string, including time point and duration for searching data. For example: date=('NOW-300DAYS', 'NOW')
+     #   area: Well-known_text_representation_of_geometry. indicating longitute and latitute  For example: area='POINT (19 49)' 
+     
+     
     api = SentinelAPI(username, key, 'https://scihub.copernicus.eu/dhus')
     
                                                                                    # search by polygon, time, and SciHub query keywords
     date=date
-    area=area                                                          #lon lat https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry
+    area=area                                                                      #lon lat https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry
     result=api.query(date=date, area=area,producttype='SLC')                       # form 'result' as a dictionary containing meta data of the images found in that certain place
     
     
