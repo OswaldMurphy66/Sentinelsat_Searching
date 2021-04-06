@@ -132,8 +132,8 @@ def sentinelsearch(username,key,Date,area,lat,lon) :
     ax2.set_title('Slice Number & Area',fontsize=16)
     ax2.set(xlabel='Lat', ylabel='Lon') 
     
-    if __name__ == '__main__':                                                  # ploting OSM map of area observed
-     a = getImageCluster(lat, lon, 0.02,  0.02, 10)
+    if __name__ == '__main__':                                                 # ploting OSM map of area observed
+     a = getImageCluster(lat, lon, 0.02,  0.02, 13)
     fig = plt.figure()
     fig.patch.set_facecolor('white')
     plt.imshow(np.asarray(a))
@@ -143,10 +143,10 @@ def sentinelsearch(username,key,Date,area,lat,lon) :
 username='oswald'
 key='Hjs19970709'
                                                                                # search by polygon, time, and SciHub query keywords
-Date=('NOW-300DAYS', 'NOW')
-area='POINT (19 49)'   
-lat=49
-lon=19      
+Date=('NOW-30DAYS', 'NOW')
+area='POINT (103.5 30.8)'   
+lat=30.8
+lon=103.5      
 
 sentinelsearch(username,key,Date,area,lat,lon)
 
