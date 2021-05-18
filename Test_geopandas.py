@@ -140,8 +140,7 @@ ax2.plot(wkt.loads(area).x,wkt.loads(area).y,'+k')
 ax2.set_title('Slice Number & Area',fontsize=16)
 ax2.set(xlabel='Lat', ylabel='Lon') 
 
-
-                                                              
+                                                      
 ctx.add_basemap(ax2, zoom=12)
 
 # Trying a new way Geopandas

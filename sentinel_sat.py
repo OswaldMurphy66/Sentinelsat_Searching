@@ -33,27 +33,33 @@ def num2deg(xtile, ytile, zoom):
   lat_rad = math.atan(math.sinh(math.pi * (1 - 2 * ytile / n)))
   lat_deg = math.degrees(lat_rad)
   return (lat_deg, lon_deg)
+
+
+
   
-def getImageCluster(lat_deg, lon_deg, delta_lat,  delta_long, zoom):
+def getImageCluster(lat_deg, lon_deg, zoom):
     headers = {"User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36"}
     smurl = r"http://a.tile.openstreetmap.org/{0}/{1}/{2}.png"
-    xmin, ymax =deg2num(lat_deg, lon_deg, zoom)
-    xmax, ymin =deg2num(lat_deg + delta_lat, lon_deg + delta_long, zoom)
+    x, y =deg2num(lat_deg, lon_deg, zoom)
     
-    Cluster = Image.new('RGB',((xmax-xmin+1)*256-1,(ymax-ymin+1)*256-1) ) 
-    for xtile in range(xmin, xmax+1):
-        for ytile in range(ymin,  ymax+1):
-            try:
-                imgurl=smurl.format(zoom, xtile, ytile)
-                print("Opening: " + imgurl)
-                imgstr = requests.get(imgurl, headers=headers)
-                tile = Image.open(BytesIO(imgstr.content))
-                Cluster.paste(tile, box=((xtile-xmin)*256 ,  (ytile-ymin)*255))
-            except: 
-                print("Couldn't download image")
-                tile = None
+    NW=num2deg(x, y, zoom)                                      # calculate extension NW-corner
+    SE=num2deg(x+1, y+1, zoom)                                      # calculate extension SE-corner
+    extent=[NW[1],SE[1], SE[0], NW[0]]                       # extent for image (left, right, bottom, top)
 
-    return Cluster
+    
+    
+    
+    try:
+        imgurl=smurl.format(zoom, x, y)
+        print("Opening: " + imgurl)
+        imgstr = requests.get(imgurl, headers=headers)
+        tile = Image.open(requests.get(imgurl, stream=True).raw)
+        
+    except: 
+        print("Couldn't download image")
+        tile = None
+
+    return tile,extent
 
 def sentinelsearch(username,key,Date,area,lat,lon) :
     ## Inputs:
@@ -129,24 +135,25 @@ def sentinelsearch(username,key,Date,area,lat,lon) :
        
         
     ax2.plot(wkt.loads(area).x,wkt.loads(area).y,'+k')
+    zoom=5                                                 # ploting OSM map of area observed
+    basemap,extent = getImageCluster(lon, lat, zoom) # get image of basemap
+    ax2.imshow(basemap,extent=extent)
     ax2.set_title('Slice Number & Area',fontsize=16)
     ax2.set(xlabel='Lat', ylabel='Lon') 
     
-    if __name__ == '__main__':                                                 # ploting OSM map of area observed
-     a = getImageCluster(lat, lon, 0.02,  0.02, 13)
-    fig = plt.figure()
-    fig.patch.set_facecolor('white')
-    plt.imshow(np.asarray(a))
-    plt.show()                                                                 # plt.show()
+    
+                                                                    # plt.show()
     return                                   
                                                                                
 username='oswald'
 key='Hjs19970709'
                                                                                # search by polygon, time, and SciHub query keywords
-Date=('NOW-30DAYS', 'NOW')
-area='POINT (103.5 30.8)'   
-lat=30.8
-lon=103.5      
+Date=('NOW-7DAYS', 'NOW')
+lat= 7.01847572282207
+lon=51.45850017456052 
+area='POINT ('+str(lat)+' '+ str(lon)+')'   
+
+     
 
 sentinelsearch(username,key,Date,area,lat,lon)
 
