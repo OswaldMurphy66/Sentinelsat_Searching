@@ -141,14 +141,12 @@ def sentinelsearch(username,key,Date,area,lat,lon) :
     ax2.set_title('Slice Number & Area',fontsize=16)
     ax2.set(xlabel='Lat', ylabel='Lon') 
     
-    
-                                                                    # plt.show()
     return                                   
                                                                                
 username='oswald'
 key='Hjs19970709'
                                                                                # search by polygon, time, and SciHub query keywords
-Date=('NOW-7DAYS', 'NOW')
+Date=('NOW-700DAYS', 'NOW')
 lat= 7.01847572282207
 lon=51.45850017456052 
 area='POINT ('+str(lat)+' '+ str(lon)+')'   
