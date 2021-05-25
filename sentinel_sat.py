@@ -88,27 +88,43 @@ def sentinelsearch(username,key,Date,area,lat,lon) :
     orbits_unique=list(set(orbits))                                                # get unique orbits in list
     slicenumber_unique=list(set(slicenumber))                                      # get unique slicenumbers in list
     
+    slice_list = [[] for i in range(len(orbits_unique))]
+    slice_list_unique = [[] for i in range(len(orbits_unique))]
+    for i in range(0, len(orbits_unique)):                                     
+        for n in range(0, len(orbits)):
+            if orbits[n] == orbits_unique[i]:
+                slice_list[i].append(slicenumber[n])
+        slice_list_unique[i] = list(set(slice_list[i]))
+            
     colors=['r','g','b','k','c','y','m']                                           # creating an array for applying different colors
     
     fig, (ax1, ax2) = plt.subplots(2,1)                                            # form 2 separate plots 
-    plt.subplots_adjust(hspace=0.6)                                                # adjusting space between subplots
+    plt.subplots_adjust(hspace=0.6)                                              # adjusting space between subplots
     
-    
-    for i in range(0,len(orbits)):
-        for n in range(0,len(orbits_unique)):
-    
-            if orbits_unique[n]==orbits[i]:
-                id_spot=slicenumber_unique.index(slicenumber[i])
-                y_tick=n-(id_spot+1)/(len(slicenumber_unique)+1)
-                ax1.plot(dates[i],n-(id_spot+1)/(len(slicenumber_unique)+1),'o'+colors[n])
-                ax1.plot(dates[i],n,'o'+colors[n])
+    idx_list = []
+    idx_list_unique = []
+    for i in range(0, len(orbits_unique)):
+        idx_list.append([(orbits_unique[i])])
+        idx_list.append(slice_list_unique[i])
+        y_Ticks.append(i)
+        for n in range(0, len(orbits)):
+            if orbits[n] == orbits_unique[i]:
+                id_spot = slice_list_unique[i].index(slicenumber[n])
+                y_tick = i - (id_spot+1) / (len(slice_list_unique[i])+1)
+                ax1.plot(dates[n], y_tick, 'o'+colors[i])
+                ax1.plot(dates[n],i,'o'+colors[i])
                 y_Ticks.append(y_tick)
-             
-   
-
-    ax1.set_yticks(range(0,n+1))
-    ax1.set_yticklabels(orbits_unique)
-
+    
+    y_Ticks_unique = list(dict.fromkeys(y_Ticks))
+    idx_list_unique = [col for row in idx_list for col in row]
+    ax1.set_yticks(y_Ticks_unique)
+    ax1.set_yticklabels(idx_list_unique)
+    
+    idx = 0
+    for i in range(0, len(orbits_unique)):
+        txt = ax1.get_yticklabels()[idx]
+        txt.set_fontsize(18)
+        idx = idx + len(idx_list[i*2]) + len(idx_list[i*2+1])                  # position of relative orbit number in the whole list
                                                                                #plot footprint
     for key in result:
         print(i)
@@ -135,8 +151,8 @@ def sentinelsearch(username,key,Date,area,lat,lon) :
        
         
     ax2.plot(wkt.loads(area).x,wkt.loads(area).y,'+k')
-    zoom=5                                                 # ploting OSM map of area observed
-    basemap,extent = getImageCluster(lon, lat, zoom) # get image of basemap
+    zoom=5                                                                     # ploting OSM map of area observed
+    basemap,extent = getImageCluster(lon, lat, zoom)                           # get image of basemap
     ax2.imshow(basemap,extent=extent)
     ax2.set_title('Slice Number & Area',fontsize=16)
     ax2.set(xlabel='Lat', ylabel='Lon') 
@@ -148,7 +164,9 @@ key='Hjs19970709'
                                                                                # search by polygon, time, and SciHub query keywords
 Date=('NOW-700DAYS', 'NOW')
 lat= 7.01847572282207
-lon=51.45850017456052 
+#lon= 25.039409
+lon=51.45850017456052
+#lat=121.544990 
 area='POINT ('+str(lat)+' '+ str(lon)+')'   
 
      
