@@ -79,6 +79,11 @@ def sentinelsearch(username,key,Date,area,lat,lon) :
     orbits=[]
     slicenumber=[]
     y_Ticks=[]
+    
+    #result = {result[key] for key in result if result[key]['sensoroperationalmode'] == "IW"]
+    result = {key:value for (key, value) in result.items() if value['sensoroperationalmode'] != "WV"}
+    #result = dict.fromkeys(result)
+    
     for key in result:
         print('relativeorbitnumber',result[key]['relativeorbitnumber'])
         orbits.append(result[key]['relativeorbitnumber'])                          # recording relative orbit number in an array
@@ -163,13 +168,13 @@ username='oswald'
 key='Hjs19970709'
                                                                                # search by polygon, time, and SciHub query keywords
 Date=('NOW-700DAYS', 'NOW')
-lat= 7.01847572282207
-#lon= 25.039409
-lon=51.45850017456052
-#lat=121.544990 
+#lat= 7.01847572282207
+lon = 7.013056
+#lon=51.45850017456052
+lat =51.450833
 area='POINT ('+str(lat)+' '+ str(lon)+')'   
 
      
 
-sentinelsearch(username,key,Date,area,lat,lon)
+sentinelsearch(username,key,Date,area,lon,lat)
 
