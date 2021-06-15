@@ -168,10 +168,10 @@ username='oswald'
 key='Hjs19970709'
                                                                                # search by polygon, time, and SciHub query keywords
 Date=('NOW-700DAYS', 'NOW')
-#lat= 7.01847572282207
-lon = 7.013056
-#lon=51.45850017456052
-lat =51.450833
+lon= 7.01847572282207
+#lon =117.963
+lat=51.45850017456052
+#at =40.953
 area='POINT ('+str(lat)+' '+ str(lon)+')'   
 
      
