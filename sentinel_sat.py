@@ -19,6 +19,7 @@ from collections.abc import Iterable
 import requests
 from io import BytesIO
 from PIL import Image
+import contextily as cx
 
 def deg2num(lat_deg, lon_deg, zoom):
   lat_rad = math.radians(lat_deg)
@@ -61,7 +62,7 @@ def getImageCluster(lat_deg, lon_deg, zoom):
 
     return tile,extent
 
-def sentinelsearch(username,key,Date,area,lat,lon) :
+def sentinelsearch(username,key,Date,area,lon,lat) :
     ## Inputs:
      #   username: string, username to sentinel hub api
      #   key: string, password to sentinel hub api
@@ -74,6 +75,8 @@ def sentinelsearch(username,key,Date,area,lat,lon) :
     date=Date
     area=area                                                                      #lon lat https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry
     result=api.query(date=date, area=area,producttype='SLC')                       # form 'result' as a dictionary containing meta data of the images found in that certain place
+    
+    df = api.to_geodataframe(result)
     
     dates=[]
     orbits=[]
@@ -155,24 +158,26 @@ def sentinelsearch(username,key,Date,area,lat,lon) :
         ax2.text(xs[imax],ys[imax],result[key]['slicenumber'],fontsize=13, color = colors[index], style = "italic")     
        
         
-    ax2.plot(wkt.loads(area).x,wkt.loads(area).y,'+k')
-    zoom=5                                                                     # ploting OSM map of area observed
-    basemap,extent = getImageCluster(lon, lat, zoom)                           # get image of basemap
-    ax2.imshow(basemap,extent=extent)
+    ax = df.plot(ax=ax2, alpha=0)
+    cx.add_basemap(ax, crs=df.crs)
+    
+    ax2.plot(wkt.loads(area).y,wkt.loads(area).x,'+k')
     ax2.set_title('Slice Number & Area',fontsize=16)
-    ax2.set(xlabel='Lat', ylabel='Lon') 
+    ax2.set(xlabel='Lat', ylabel='Lon')
     
     return                                   
                                                                                
 username='oswald'
 key='Hjs19970709'
                                                                                # search by polygon, time, and SciHub query keywords
-Date=('NOW-700DAYS', 'NOW')
+Date=('NOW-1000DAYS', 'NOW')
 lon= 7.01847572282207
+#lon=9
+#lat=49
 #lon =117.963
 lat=51.45850017456052
 #at =40.953
-area='POINT ('+str(lat)+' '+ str(lon)+')'   
+area='POINT ('+str(lon)+' '+ str(lat)+')'   
 
      
 
