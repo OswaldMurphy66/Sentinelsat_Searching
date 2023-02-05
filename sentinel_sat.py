@@ -167,8 +167,8 @@ def sentinelsearch(username,key,Date,area,lon,lat) :
     
     return                                   
                                                                                
-username='oswald'
-key='Hjs19970709'
+username=''
+key=''
                                                                                # search by polygon, time, and SciHub query keywords
 Date=('NOW-1000DAYS', 'NOW')
 lon= 7.01847572282207
